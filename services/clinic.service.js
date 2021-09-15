@@ -1,14 +1,18 @@
 import { fetchClinics } from "../api/clinic.api.js";
 
-const clinicEndpoints = [
-    'https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json',
-    'https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json'
-];
-
 export const searchClinics = async (query) => {
     try{
-        const clinics = await fetchClinics();
-        return clinics;
+        const clinicsArray = await fetchClinics();
+
+        const clinics = [];
+        clinicsArray.map(c => clinics.push(...c));
+
+        const filteredClinics = clinics.filter(clinic => {
+            let isValid = true;
+            Object.keys(query).forEach(key => isValid = isValid && clinic[key] === query[key]);
+            return isValid;
+          });
+        return filteredClinics;
     } catch(e) {
         throw new Error(e.message);
     }
