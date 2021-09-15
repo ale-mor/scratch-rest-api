@@ -7,7 +7,7 @@ export const getClinics = async (req, res) => {
       const list = await searchClinics(query);
       res.send(list);
     } catch(e) {
-      console.log(e.message);
+      console.log('Error: ', e.message);
       res.sendStatus(500);
     }
   };
