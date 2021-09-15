@@ -8,13 +8,15 @@ const checkResponse = (res) => {
 }
 
 export const fetchClinics = async () => {
-    return fetch('https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json')
-        .then(checkResponse)
-        .then(res => res.json())
-        .then(json => {
-            return json;
-        })
-        .catch(err => {
-            throw new Error(err.message)
-        });
+    return Promise.all([
+        fetch('https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json'),
+        fetch('https://storage.googleapis.com/scratchpay-code-challenge/vet-clinics.json')
+    ]).then( responses => {
+        return Promise.all(responses.map( response => {
+            checkResponse(response);
+            return response.json();
+        }));
+    }).catch(err => {
+        throw new Error(err.message)
+    });
 };
